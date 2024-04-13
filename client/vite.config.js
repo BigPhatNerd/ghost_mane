@@ -8,8 +8,5 @@ export default defineConfig({
     proxy: {
       "/api": "https://lhrlslacktest.ngrok.io",
     },
-    build: {
-      outDir: "./build", // Optional: Configure output directory (default is 'dist')
-    },
   },
 });
