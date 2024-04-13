@@ -1,0 +1,87 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100vh;
+  align-items: center;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  overflow-y: auto; /* Enables vertical scrolling */
+  padding: 20px 0; /* Adds padding to the top and bottom */
+}
+
+.app-description {
+  text-align: center;
+  margin: 20px 10%;
+  padding: 30px;
+  font-size: 1rem;
+  color: #000000;
+  font-color: #000000;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ); /* Optional: increases readability */
+  border-radius: 10px; /* Optional: rounds the corners of the description box */
+}
+
+.input-container input,
+.input-container button {
+  width: 250px;
+  height: 40px;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.ghost-image {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 250px;
+}
+
+p {
+  color: black;
+  font-size: 1.5rem;
+}
+
+.input-container input::placeholder {
+  text-align: center;
+  color: #ffffff;
+}
+
+input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #777;
+  background-color: #333;
+  color: #fff;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin: 2px;
+}
+
+.error-response {
+  color: white;
+  background-color: black;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 16px; /* Slightly larger font */
+  text-align: center;
+}
+
+.view-tweet-link {
+  color: white;
+}
