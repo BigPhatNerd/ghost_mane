@@ -10,7 +10,7 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "preview": "vite preview",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd app && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
