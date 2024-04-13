@@ -11,7 +11,7 @@ connectDB();
 
 app.use(express.json());
 app.use("/api", routes);
-
+console.log("__dirname: ", __dirname);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
   app.get("*", (req, res) => {
