@@ -16,4 +16,13 @@ async function getTweetsAndReply() {
   }
 }
 
-getTweetsAndReply();
+module.exports = getTweetsAndReply;
+
+if (require.main === module) {
+  getTweetsAndReply();
+}
+
+// The if (require.main === module) { getTweetsAndReply(); } part ensures that
+// getTweetsAndReply() is called when the file is executed directly (e.g., by
+// Node.js or a Heroku job), but not when it's required by another file, which
+// is useful for testing.

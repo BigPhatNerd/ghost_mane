@@ -3,7 +3,7 @@ const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
 dayjs.extend(utc);
 const router = express.Router();
-const cron = require("node-cron");
+const Twilio = require("twilio");
 const {
   saveOAuthToken,
   isTokenExpired,
@@ -18,6 +18,11 @@ const {
 } = require("../tweetArrays");
 const { checkTweetTiming, companyReport } = require("../middleware");
 const { getClient } = require("../utils/twitterClient");
+
+const twilioClient = new Twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
 const authClient = new auth.OAuth2User({
   client_id: process.env.OAUTH2_CLIENT_ID,
@@ -79,6 +84,19 @@ router
           tweetId: tweetResponse.data.id,
         });
         const urlForTweet = getTweetURL(tweetResponse.data.id);
+
+        try {
+          const tweetCount = await Tweet.countDocuments({});
+          if (tweetCount % 10 === 0) {
+            await twilioClient.messages.create({
+              body: `Ghostmane has sent ${tweetCount} tweets!👻`,
+              from: process.env.TWILIO_NUMBER,
+              to: process.env.MY_PHONE_NUMBER,
+            });
+          }
+        } catch (twilioError) {
+          console.error("Twilio error:", twilioError.message);
+        }
 
         res.json({
           success: true,
