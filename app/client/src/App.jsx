@@ -160,9 +160,11 @@ function App() {
           anonymous tweet to the relevant company or recruiter on your behalf,
           holding them accountable, publicly.
           <br />
-          <br /> Please note: Tweets to the same company from the same user can
-          only be sent once per day to maintain professionalism and
-          effectiveness.
+          <br />{" "}
+          <em>
+            Please note: Tweets to the same company from the same user can only
+            be sent once per day to maintain professionalism and effectiveness.
+          </em>
         </p>
       </div>
       <form className="input-container" onSubmit={handleSubmit}>

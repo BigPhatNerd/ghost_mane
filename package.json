@@ -11,8 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run app/client\"",
+    "client": "npm start --prefix app/client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
     "preview": "vite preview",
     "heroku-postbuild": "cd app/client && npm install && npm run build"
   },
