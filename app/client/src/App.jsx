@@ -27,8 +27,7 @@ function App() {
 
   const handleLastNameChange = (e) => {
     const value = e.target.value;
-    const capitalizedValue =
-      value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
     setLastName(capitalizedValue);
     validateLastName(capitalizedValue, firstInitial);
     setShowCard(false);
