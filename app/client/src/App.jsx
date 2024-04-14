@@ -214,7 +214,10 @@ function App() {
         </p>
         <button onClick={toggleModal}>More Info</button>
       </div>
-      {isMessageVisible && <div className="error-response">{message}</div>}
+      {console.log({ message })}
+      {(isMessageVisible || message) && (
+        <div className="error-response">{message}</div>
+      )}
       <form className="input-container" onSubmit={handleSubmit}>
         <div className="input-container">
           <input
