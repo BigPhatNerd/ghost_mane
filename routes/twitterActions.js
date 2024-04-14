@@ -71,7 +71,7 @@ router
 
       const client = await getClient();
 
-      if (!thisClient) {
+      if (!client) {
         return res.status(503).json({
           success: false,
           message: "Twitter client unavailable. Please try again later.",
@@ -165,17 +165,24 @@ router.route("/search_tweets").get(async (req, res) => {
         url: "https://www.ghost-mane.org/",
       });
 
-      const repliedTweet = await thisClient.tweets.createTweet({
-        text: replyText,
-        reply: {
-          in_reply_to_tweet_id: tweet.id,
-        },
-      });
-      console.log({ repliedTweet });
-      await new RepliedTweet({
+      const existingTweet = await RepliedTweet.findOne({
         tweetId: tweet.id,
-        replyId: repliedTweet.data.id,
-      }).save();
+      });
+      if (!existingTweet) {
+        const repliedTweet = await thisClient.tweets.createTweet({
+          text: replyText,
+          reply: {
+            in_reply_to_tweet_id: tweet.id,
+          },
+        });
+        console.log({ repliedTweet });
+        await new RepliedTweet({
+          tweetId: tweet.id,
+          replyId: repliedTweet.data.id,
+        }).save();
+      } else {
+        console.log("Tweet already replied to", tweet.id);
+      }
     }
     console.log({ tweets });
     res.json({ success: true, tweets });

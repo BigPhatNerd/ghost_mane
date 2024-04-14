@@ -2,6 +2,7 @@ import { useState } from "react";
 import ghostImage from "./img/ghost_img.png";
 import axios from "axios";
 import TweetCard from "./TweetCard";
+import Modal from "./Modal";
 
 import "./App.css";
 
@@ -15,6 +16,7 @@ function App() {
   const [showCard, setShowCard] = useState(false);
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [message, setMessage] = useState("");
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const handleFirstInitialChange = (e) => {
     const value = e.target.value.toUpperCase();
@@ -115,6 +117,15 @@ function App() {
           "You can only tweet a specific company once every 24 hours",
           5000
         );
+      } else if (
+        !response.data.success &&
+        response.data.message ===
+          "Twitter client unavailable. Please try again later."
+      ) {
+        messageWithTimeout(
+          "Twitter client unavailable. Please try again later.",
+          5000
+        );
       } else {
         messageWithTimeout(
           "There was an error sending your tweet. Please try again later.",
@@ -149,23 +160,57 @@ function App() {
     }, timeout);
   };
 
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
+  };
+
   return (
     <div className="App">
       <img src={ghostImage} alt="Ghost" className="ghost-image" />
       <div className="app-description">
         <p>
-          This tool is designed for job applicants who were promised a follow-up
+          {/* This tool is designed for job applicants who were promised a follow-up
           from recruiters or company representatives within a specified time
           frame but did not receive any communication. Our app will send an
           anonymous tweet to the relevant company or recruiter on your behalf,
-          holding them accountable, publicly.
+          holding them accountable, publicly. */}
+          Help us hold companies accountable for ghosting applicants by sending
+          an anonymous tweet.
+          <Modal isOpen={isModalOpen} onClose={toggleModal}>
+            <div>
+              <h2>How it works</h2>
+              <p>
+                This tool is designed for job applicants who were promised a
+                follow-up from recruiters or company representatives within a
+                specified time frame but did not receive any communication. Our
+                app will send an anonymous tweet to the relevant company or
+                recruiter on your behalf, holding them accountable, publicly.
+              </p>
+              <h2>How to use</h2>
+              <p>
+                Enter the recruiter's first initial, last name, and the
+                company's Twitter handle. We will generate a tweet for you to
+                send to the company.
+              </p>
+              <h2>Important</h2>
+              <p>
+                Please note: Tweets to the same company from the same user can
+                only be sent once per day to maintain professionalism and
+                effectiveness.
+              </p>
+            </div>
+          </Modal>
           <br />
           <br />{" "}
           <em>
-            Please note: Tweets to the same company from the same user can only
-            be sent once per day to maintain professionalism and effectiveness.
+            <b>
+              {/* Please note: Tweets to the same company from the same user can only
+            be sent once per day to maintain professionalism and effectiveness. */}
+              Please note: 1 tweet per company per day from the same user.
+            </b>
           </em>
         </p>
+        <button onClick={toggleModal}>More Info</button>
       </div>
       <form className="input-container" onSubmit={handleSubmit}>
         <div className="input-container">
@@ -233,6 +278,21 @@ function App() {
       )}
     </div>
   );
+}
+
+{
+  /* <script
+  data-name="BMC-Widget"
+  data-cfasync="false"
+  src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+  data-id="ghostMane"
+  data-description="Support me on Buy me a coffee!"
+  data-message=""
+  data-color="#5F7FFF"
+  data-position="Right"
+  data-x_margin="18"
+  data-y_margin="18"
+></script>; */
 }
 
 export default App;

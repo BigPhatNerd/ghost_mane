@@ -8,6 +8,9 @@
   background-color: rgba(0, 0, 0, 0.7);
   overflow-y: auto; /* Enables vertical scrolling */
   padding: 20px 0; /* Adds padding to the top and bottom */
+  margin: 0 auto; /* Centers the app on the page horizontally and removes margin */
+  width: 100%; /* Ensures the app stretches full width */
+  box-sizing: border-box;
 }
 
 .app-description {
@@ -68,8 +71,9 @@ input[type="text"] {
 
 .error {
   color: red;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   margin: 2px;
+  text-shadow: 1px 1px black; /* Horizontal shadow, Vertical shadow, Blur radius */
 }
 
 .error-response {
