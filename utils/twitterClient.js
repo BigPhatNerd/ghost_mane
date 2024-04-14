@@ -7,12 +7,14 @@ const { saveOAuthToken, isTokenExpired } = require("../controller");
 const authClient = new auth.OAuth2User({
   client_id: process.env.OAUTH2_CLIENT_ID,
   client_secret: process.env.OAUTH2_CLIENT_SECRET,
-  callback: "http://lhrlslacktest.ngrok.io/api/twitterActions/oauth/callback",
+  callback:
+    (process.env.PROD_URL || process.env.DEV_URL) +
+    "/api/twitterActions/oauth/callback",
   scopes: ["tweet.read", "tweet.write", "users.read", "offline.access"],
 });
 
 let client;
-console.log({ client });
+
 async function initializeClient() {
   try {
     const token = await OAuthToken.findOne();

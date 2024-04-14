@@ -1,19 +1,20 @@
 const fetch = require("node-fetch");
 
 async function getTweetsAndReply() {
-  const url = "https://www.ghost-mane.org/api/twitterActions/search_tweets";
+  const 
+  const url =(process.env.PROD_URL || process.env.DEV_URL) + "/api/twitterActions/search_tweets";
 
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log("Gettin and sending tweets...");
-    console.log(data);
-  } catch (error) {
-    console.error("Failed to fetch data:", error);
+https: try {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
+  const data = await response.json();
+  console.log("Gettin and sending tweets...");
+  console.log(data);
+} catch (error) {
+  console.error("Failed to fetch data:", error);
+}
 }
 
 module.exports = getTweetsAndReply;

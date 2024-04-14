@@ -27,7 +27,9 @@ const twilioClient = new Twilio(
 const authClient = new auth.OAuth2User({
   client_id: process.env.OAUTH2_CLIENT_ID,
   client_secret: process.env.OAUTH2_CLIENT_SECRET,
-  callback: "http://lhrlslacktest.ngrok.io/api/twitterActions/oauth/callback",
+  callback:
+    (process.env.PROD || process.env.DEV) +
+    "/api/twitterActions/oauth/callback",
   scopes: ["tweet.read", "tweet.write", "users.read", "offline.access"],
 });
 const client = new Client(authClient);
@@ -114,7 +116,7 @@ router
 
 router.route("/search_tweets").get(async (req, res) => {
   const thisClient = await getClient();
-  console.log({ thisClient });
+
   const query =
     "(recruiter OR company)  ghosted -is:retweet -has:media  -is:reply";
   const maxResults = 10;
@@ -146,7 +148,9 @@ router.route("/search_tweets").get(async (req, res) => {
     });
     let count = 0;
     for (let tweet of tweets) {
-      const replyText = determineTweetTemplate({ url: "www.ghostmane.com" });
+      const replyText = determineTweetTemplate({
+        url: "https://www.ghost-mane.org/",
+      });
 
       const repliedTweet = await thisClient.tweets.createTweet({
         text: replyText,
