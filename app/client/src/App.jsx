@@ -90,6 +90,19 @@ function App() {
     setErrors(newErrors);
   };
 
+  const messageWithTimeout = (message, timeout) => {
+    setMessage(message);
+    setIsMessageVisible(true);
+    setTimeout(() => {
+      setIsMessageVisible(false);
+      setMessage("");
+      message;
+    }, timeout);
+    setFirstInitial("");
+    setLastName("");
+    setTwitterHandle("");
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -147,19 +160,6 @@ function App() {
       }
       setIsSubmitting(false);
     }
-  };
-
-  const messageWithTimeout = (message, timeout) => {
-    setMessage(message);
-    setIsMessageVisible(true);
-    setTimeout(() => {
-      setIsMessageVisible(false);
-      setMessage("");
-      message;
-    }, timeout);
-    setFirstInitial("");
-    setLastName("");
-    setTwitterHandle("");
   };
 
   const toggleModal = () => {
