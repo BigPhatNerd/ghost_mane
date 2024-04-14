@@ -60,6 +60,21 @@ p {
   color: #ffffff;
 }
 
+.hide-on-mobile {
+  display: block;
+}
+
+.role-selection {
+  color: white;
+}
+
+@media (max-width: 600px) {
+  /* Adjust this value based on your design requirements */
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
 input[type="text"] {
   padding: 10px;
   font-size: 16px;

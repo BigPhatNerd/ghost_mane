@@ -16,6 +16,7 @@ const checkTweetTiming = async (req, res, next) => {
     });
 
     if (recentTweet) {
+      console.log("\n\n\n\n Is this an issue?");
       return res.status(403).json({
         success: false,
         message: "You can only tweet a specific company once every 24 hours",

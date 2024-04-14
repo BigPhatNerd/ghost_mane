@@ -21,28 +21,15 @@ async function initializeClient() {
     if (!token) {
       throw new Error("No OAuth token found");
     }
-    if (
-      !token.accessToken ||
-      !token.refreshToken ||
-      (await isTokenExpired(token.expiresAt))
-    ) {
-      authClient.token = {
-        refresh_token: token.refreshToken,
-      };
 
-      const refreshedToken = await authClient.refreshAccessToken();
+    authClient.token = {
+      refresh_token: token.refreshToken,
+    };
 
-      await saveOAuthToken(refreshedToken.token);
-      authClient.token = refreshedToken.token;
-    } else {
-      authClient.token = {
-        access_token: token.accessToken,
-        refresh_token: token.refreshToken,
-        token_type: "bearer",
-        expires_at: token.expiresAt,
-      };
-    }
+    const refreshedToken = await authClient.refreshAccessToken();
 
+    await saveOAuthToken(refreshedToken.token);
+    authClient.token = refreshedToken.token;
     client = new Client(authClient);
     return client;
   } catch (error) {

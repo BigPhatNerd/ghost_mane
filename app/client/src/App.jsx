@@ -17,6 +17,7 @@ function App() {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [isModalOpen, setModalOpen] = useState(false);
+  const [type, setType] = useState("");
 
   const handleFirstInitialChange = (e) => {
     const value = e.target.value.toUpperCase();
@@ -113,52 +114,25 @@ function App() {
         lastName,
         twitterHandle,
       });
-
+      console.log({ responseData: response.data });
       if (response.data.success) {
         setSubmissionMessage(response.data);
         setShowCard(true);
         setFirstInitial("");
         setLastName("");
         setTwitterHandle("");
-      } else if (
-        !response.data.success &&
-        response.data.message ===
-          "You can only tweet a specific company once every 24 hours"
-      ) {
-        messageWithTimeout(
-          "You can only tweet a specific company once every 24 hours",
-          5000
-        );
-      } else if (
-        !response.data.success &&
-        response.data.message ===
-          "Twitter client unavailable. Please try again later."
-      ) {
-        messageWithTimeout(
-          "Twitter client unavailable. Please try again later.",
-          5000
-        );
       } else {
-        messageWithTimeout(
-          "There was an error sending your tweet. Please try again later.",
-          5000
-        );
+        messageWithTimeout(response.data.message, 5000);
       }
+
       setIsSubmitting(false);
     } catch (error) {
-      if (error.response) {
-        const serverMessage =
-          error.response.data || "There was an error processing your request.";
-        messageWithTimeout(serverMessage, 5000);
-      } else {
-        console.error("There was a problem with your Axios operation:", error);
-
-        messageWithTimeout(
-          "There was an error sending your tweet. Please try again later.",
-          5000
-        );
-      }
+      const errorMessage =
+        error.response?.data?.message || "An unexpected server error occurred";
+      messageWithTimeout(errorMessage, 5000);
+    } finally {
       setIsSubmitting(false);
+      setType("");
     }
   };
 
@@ -176,22 +150,22 @@ function App() {
           frame but did not receive any communication. Our app will send an
           anonymous tweet to the relevant company or recruiter on your behalf,
           holding them accountable, publicly. */}
-          Help us hold companies accountable for ghosting applicants by sending
-          an anonymous tweet.
+          Help us hold companies accountable for ghosting by sending an
+          anonymous tweet.
           <Modal isOpen={isModalOpen} onClose={toggleModal}>
             <div>
               <h2>How it works</h2>
               <p>
-                This tool is designed for job applicants who were promised a
-                follow-up from recruiters or company representatives within a
-                specified time frame but did not receive any communication. Our
-                app will send an anonymous tweet to the relevant company or
-                recruiter on your behalf, holding them accountable, publicly.
+                This tool is designed for customes or job applicants who were
+                promised a follow-up from recruiters or company representatives
+                within a specified time frame but did not receive any
+                communication. Our app will send an anonymous tweet to the
+                relevant company or recruiter on your behalf, holding them
+                accountable, publicly.
               </p>
               <h2>How to use</h2>
               <p>
-                Enter the recruiter's first initial, last name, and the
-                company's Twitter handle. We will generate a tweet for you to
+                Enter specified information. We will generate a tweet for you to
                 send to the company.
               </p>
               <h2>Important</h2>
@@ -212,51 +186,84 @@ function App() {
             </b>
           </em>
         </p>
-        <button onClick={toggleModal}>More Info</button>
+        <div className="hide-on-mobile">
+          <button onClick={toggleModal}>More Info</button>
+        </div>
       </div>
       {console.log({ message })}
-      {(isMessageVisible || message) && (
-        <div className="error-response">{message}</div>
+      {isMessageVisible && <div className="error-response">{message}</div>}
+      <div className="role-selection">
+        <label>
+          <input
+            type="radio"
+            name="type"
+            value="applicant"
+            checked={type === "applicant"}
+            onChange={() => setType("applicant")}
+          />
+          Job Applicant
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="type"
+            value="customer"
+            checked={type === "customer"}
+            onChange={() => setType("customer")}
+          />
+          Customer
+        </label>
+        <br />
+        <br />
+      </div>
+      {type && (
+        <form className="input-container" onSubmit={handleSubmit}>
+          <div className="input-container">
+            {type === "applicant" && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Recruiter's First Initial"
+                  value={firstInitial}
+                  maxLength="1"
+                  onChange={handleFirstInitialChange}
+                />
+                {errors.firstInitial && (
+                  <div className="error">{errors.firstInitial}</div>
+                )}
+                <input
+                  type="text"
+                  placeholder="Recruiter's Last Name"
+                  value={lastName}
+                  maxLength="50"
+                  onChange={handleLastNameChange}
+                />
+              </>
+            )}
+            {errors.lastName && <div className="error">{errors.lastName}</div>}
+
+            {type && (
+              <input
+                type="text"
+                placeholder="Company Twitter Handle"
+                value={twitterHandle}
+                onChange={handleTwitterHandleChange}
+              />
+            )}
+            {errors.twitterHandle && (
+              <div className="error">{errors.twitterHandle}</div>
+            )}
+            <button
+              style={{ height: "40px", padding: "10px 20px" }}
+              type="submit"
+              disabled={Object.keys(errors).length > 0 || !twitterHandle}
+            >
+              {console.log(Object.keys(errors).length > 0)}
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </button>
+          </div>{" "}
+        </form>
       )}
-      <form className="input-container" onSubmit={handleSubmit}>
-        <div className="input-container">
-          <input
-            type="text"
-            placeholder="Recruiter's First Initial"
-            value={firstInitial}
-            maxLength="1"
-            onChange={handleFirstInitialChange}
-          />
-          {errors.firstInitial && (
-            <div className="error">{errors.firstInitial}</div>
-          )}
-          <input
-            type="text"
-            placeholder="Recruiter's Last Name"
-            value={lastName}
-            maxLength="50"
-            onChange={handleLastNameChange}
-          />
-          {errors.lastName && <div className="error">{errors.lastName}</div>}
-          <input
-            type="text"
-            placeholder="Company Twitter Handle"
-            value={twitterHandle}
-            onChange={handleTwitterHandleChange}
-          />
-          {errors.twitterHandle && (
-            <div className="error">{errors.twitterHandle}</div>
-          )}
-          <button
-            style={{ height: "40px", padding: "10px 20px" }}
-            type="submit"
-            disabled={Object.keys(errors).length > 0 || !twitterHandle}
-          >
-            {console.log(Object.keys(errors).length > 0)}
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </button>
-        </div>{" "}
-      </form>
 
       {!submissionMessage?.success && submissionMessage?.tweetResponse && (
         <div className="error-response">{message}</div>
@@ -284,21 +291,6 @@ function App() {
       )}
     </div>
   );
-}
-
-{
-  /* <script
-  data-name="BMC-Widget"
-  data-cfasync="false"
-  src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
-  data-id="ghostMane"
-  data-description="Support me on Buy me a coffee!"
-  data-message=""
-  data-color="#5F7FFF"
-  data-position="Right"
-  data-x_margin="18"
-  data-y_margin="18"
-></script>; */
 }
 
 export default App;

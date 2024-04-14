@@ -10,9 +10,25 @@ const repliedTweetSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  replyText: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
+  },
   repliedAt: {
     type: Date,
-    default: Date.now,
+  },
+  inResponseToAuthor: {
+    type: String,
+  },
+  inResponseToTweet: {
+    type: String,
+  },
+  inResponseToTweetId: {
+    type: String,
   },
 });
 

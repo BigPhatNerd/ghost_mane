@@ -11,11 +11,7 @@ const {
 } = require("../controller");
 const { Client, auth } = require("twitter-api-sdk");
 const { OAuthToken, Tweet, RepliedTweet } = require("../models");
-const {
-  tweetTemplatesWithNames,
-  companyTweetTemplates,
-  determineTweetTemplate,
-} = require("../tweetArrays");
+const { determineTweetTemplate } = require("../tweetArrays");
 const { checkTweetTiming, companyReport } = require("../middleware");
 const { getClient } = require("../utils/twitterClient");
 
@@ -80,7 +76,9 @@ router
 
       const { firstInitial, lastName, twitterHandle } = req.body;
       const tweetResponse = await client.tweets.createTweet({
-        text: determineTweetTemplate({ lastName, firstInitial, twitterHandle }),
+        text: determineTweetTemplate(
+          { lastName, firstInitial, twitterHandle } + " " + "#GhostMane"
+        ),
       });
 
       const recruiterName = lastName ? `${firstInitial}. ${lastName}` : "";
@@ -137,14 +135,15 @@ router.route("/search_tweets").get(async (req, res) => {
 
   let now = dayjs().utc();
   let endTime = now.subtract(11, "second").toISOString();
-  let startTime = now.subtract(1, "day").toISOString();
+  let startTime = now.subtract(60, "minute").toISOString();
 
   try {
     const lastReply = await RepliedTweet.findOne().sort({ createdAt: -1 });
     if (lastReply) {
-      console.log({ lastReply });
       let lastReplyTime = dayjs(lastReply.repliedAt).utc();
-      startTime = lastReplyTime.add(1, "minute").toISOString();
+      if (lastReplyTime.isAfter(dayjs(startTime))) {
+        startTime = lastReplyTime.add(1, "minute").toISOString();
+      }
     }
   } catch (err) {
     console.error("Error fetching last replied tweet time:", err);
@@ -156,11 +155,18 @@ router.route("/search_tweets").get(async (req, res) => {
     const { data: tweets, meta } = await thisClient.tweets.tweetsRecentSearch({
       query,
       max_results: maxResults,
+      "tweet.fields": "created_at,author_id,edit_history_tweet_ids",
       start_time: startTime,
       end_time: endTime,
     });
-    let count = 0;
+
+    console.log({ tweets, startTime, endTime });
+    if (!tweets) {
+      return res.json({ success: true, message: "No tweets were found 🥹" });
+    }
+
     for (let tweet of tweets) {
+      console.log({ tweet, startTime, endTime });
       const replyText = determineTweetTemplate({
         url: "https://www.ghost-mane.org/",
       });
@@ -168,7 +174,7 @@ router.route("/search_tweets").get(async (req, res) => {
       const existingTweet = await RepliedTweet.findOne({
         tweetId: tweet.id,
       });
-      if (!existingTweet) {
+      if (!existingTweet && tweet.edit_history_tweet_ids.length <= 1) {
         const repliedTweet = await thisClient.tweets.createTweet({
           text: replyText,
           reply: {
@@ -178,13 +184,19 @@ router.route("/search_tweets").get(async (req, res) => {
         console.log({ repliedTweet });
         await new RepliedTweet({
           tweetId: tweet.id,
+          replyText,
+          inResponseToAuthor: tweet.author_id,
+          inResponseToTweet: tweet.text,
+          inResponseToTweetId: tweet.id,
           replyId: repliedTweet.data.id,
+          repliedAt: new Date(),
+          type: "recruiter",
         }).save();
       } else {
         console.log("Tweet already replied to", tweet.id);
       }
     }
-    console.log({ tweets });
+
     res.json({ success: true, tweets });
   } catch (error) {
     console.error("Failed to search tweets:", error);

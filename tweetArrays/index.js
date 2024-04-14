@@ -1,4 +1,4 @@
-const tweetTemplatesWithNames = [
+const recruiterTweetTemplates = [
   "{FI}. {LN} of {TH}, you’ve been ghosting people. Integrity says that if you say you will get back to someone...get back to them, mane.",
   "Hey {FI}. {LN} from {TH}, why ignore messages? If you're going to promise a callback, follow through, mane.",
   "{FI}. {LN} at {TH}, missing in action? You said you’d reply but seem to have vanished, mane.",
@@ -103,9 +103,9 @@ const determineTweetTemplate = ({
   twitterHandle,
 }) => {
   const randomIndex = Math.floor(
-    Math.random() * tweetTemplatesWithNames.length
+    Math.random() * recruiterTweetTemplates.length
   );
-  const tweetTemplateWithName = tweetTemplatesWithNames[randomIndex];
+  const tweetTemplateWithName = recruiterTweetTemplates[randomIndex];
   const tweetTemplateWithCompany = companyTweetTemplates[randomIndex];
   const replyTweet = replyTweetTemplates[randomIndex];
 
@@ -121,15 +121,16 @@ const determineTweetTemplate = ({
       "Stop ghosting your applicants. \n#GhostMane"
     );
   } else {
-    return tweetTemplateWithCompany.replace(
-      "{TH}",
-      twitterHandle + " " + "Stop ghosting your applicants. \n#GhostMane"
+    return (
+      tweetTemplateWithCompany.replace("{TH}", twitterHandle) +
+      " " +
+      "Stop ghosting your customers. \n#GhostMane"
     );
   }
 };
 
 module.exports = {
-  tweetTemplatesWithNames,
+  recruiterTweetTemplates,
   companyTweetTemplates,
   determineTweetTemplate,
 };
