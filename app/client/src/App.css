@@ -70,7 +70,7 @@ input[type="text"] {
 }
 
 .error {
-  color: red;
+  color: white;
   font-size: 1.1rem;
   margin: 2px;
   text-shadow: 1px 1px black; /* Horizontal shadow, Vertical shadow, Blur radius */
