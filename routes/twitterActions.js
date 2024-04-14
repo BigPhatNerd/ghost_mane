@@ -23,13 +23,12 @@ const twilioClient = new Twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
-
+const urlPrefix = process.env.PROD_URL || process.env.DEV_URL;
+const url = urlPrefix + "/api/twitterActions/oauth/callback";
 const authClient = new auth.OAuth2User({
   client_id: process.env.OAUTH2_CLIENT_ID,
   client_secret: process.env.OAUTH2_CLIENT_SECRET,
-  callback:
-    (process.env.PROD || process.env.DEV) +
-    "/api/twitterActions/oauth/callback",
+  callback: url,
   scopes: ["tweet.read", "tweet.write", "users.read", "offline.access"],
 });
 const client = new Client(authClient);
