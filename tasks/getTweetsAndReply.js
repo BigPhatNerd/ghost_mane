@@ -1,20 +1,21 @@
 const fetch = require("node-fetch");
 
 async function getTweetsAndReply() {
-  const 
-  const url =(process.env.PROD_URL || process.env.DEV_URL) + "/api/twitterActions/search_tweets";
+  const url =
+    (process.env.PROD_URL || process.env.DEV_URL) +
+    "/api/twitterActions/search_tweets";
 
-https: try {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  https: try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("Gettin and sending tweets...");
+    console.log(data);
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
   }
-  const data = await response.json();
-  console.log("Gettin and sending tweets...");
-  console.log(data);
-} catch (error) {
-  console.error("Failed to fetch data:", error);
-}
 }
 
 module.exports = getTweetsAndReply;
