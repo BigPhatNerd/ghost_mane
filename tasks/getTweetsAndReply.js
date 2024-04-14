@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 async function getTweetsAndReply() {
-  const url = "https://www.ghost-mane.org/api/search_tweets";
+  const url = "https://www.ghost-mane.org/api/twitterActions/search_tweets";
 
   try {
     const response = await fetch(url);
