@@ -30,7 +30,9 @@ async function initializeClient() {
       authClient.token = {
         refresh_token: token.refreshToken,
       };
+      console.log({ authClientToken: authClient.token });
       const refreshedToken = await authClient.refreshAccessToken();
+      console.log({ refreshedToken });
       await saveOAuthToken(refreshedToken.token);
       authClient.token = refreshedToken.token;
       console.log(

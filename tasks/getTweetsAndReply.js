@@ -1,9 +1,10 @@
 const fetch = require("node-fetch");
-
+require("dotenv").config();
 async function getTweetsAndReply() {
-  const url =
-    (process.env.PROD_URL || process.env.DEV_URL) +
-    "/api/twitterActions/search_tweets";
+  const baseURL = process.env.PROD_URL || process.env.DEV_URL;
+  const test = process.env.DEV_URL;
+  console.log({ baseURL, test });
+  const url = baseURL + "/api/twitterActions/search_tweets";
 
   https: try {
     const response = await fetch(url);

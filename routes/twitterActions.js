@@ -71,6 +71,14 @@ router
       const user = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
       const client = await getClient();
+
+      if (!thisClient) {
+        return res.status(503).json({
+          success: false,
+          message: "Twitter client unavailable. Please try again later.",
+        });
+      }
+
       const { firstInitial, lastName, twitterHandle } = req.body;
       const tweetResponse = await client.tweets.createTweet({
         text: determineTweetTemplate({ lastName, firstInitial, twitterHandle }),
@@ -116,6 +124,13 @@ router
 
 router.route("/search_tweets").get(async (req, res) => {
   const thisClient = await getClient();
+
+  if (!thisClient) {
+    return res.status(503).json({
+      success: false,
+      message: "Twitter client unavailable. Please try again later.",
+    });
+  }
 
   const query =
     "(recruiter OR company)  ghosted -is:retweet -has:media  -is:reply";
