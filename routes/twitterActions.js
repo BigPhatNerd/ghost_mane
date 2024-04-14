@@ -133,19 +133,18 @@ router.route("/search_tweets").get(async (req, res) => {
 
   const query =
     "(recruiter OR company)  ghosted -is:retweet -has:media  -is:reply";
-  const maxResults = 10;
+  const maxResults = 50;
 
   let now = dayjs().utc();
-  let endTime = now.subtract(10, "second").toISOString();
+  let endTime = now.subtract(11, "second").toISOString();
   let startTime = now.subtract(1, "day").toISOString();
 
   try {
     const lastReply = await RepliedTweet.findOne().sort({ createdAt: -1 });
     if (lastReply) {
-      let lastReplyTime = dayjs(lastReply.createdAt).utc();
-      if (lastReplyTime.add(1, "minute").isAfter(now.subtract(10, "seconds"))) {
-        startTime = lastReplyTime.add(1, "minute").toISOString();
-      }
+      console.log({ lastReply });
+      let lastReplyTime = dayjs(lastReply.repliedAt).utc();
+      startTime = lastReplyTime.add(1, "minute").toISOString();
     }
   } catch (err) {
     console.error("Error fetching last replied tweet time:", err);
@@ -182,6 +181,14 @@ router.route("/search_tweets").get(async (req, res) => {
     res.json({ success: true, tweets });
   } catch (error) {
     console.error("Failed to search tweets:", error);
+    console.log(
+      require("util").inspect(
+        { errorObj: error?.error?.errors },
+        false,
+        null,
+        true
+      )
+    );
     res.json({ success: false, error });
   }
 });
