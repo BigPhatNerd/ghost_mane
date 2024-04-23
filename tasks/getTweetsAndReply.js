@@ -6,7 +6,7 @@ async function getTweetsAndReply() {
   console.log({ baseURL, test });
   const url = baseURL + "/api/twitterActions/search_tweets";
 
-  https: try {
+  try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
