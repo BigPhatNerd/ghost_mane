@@ -3,6 +3,7 @@
 const { Client, auth } = require("twitter-api-sdk");
 const { OAuthToken } = require("../models");
 const { saveOAuthToken, isTokenExpired } = require("../controller");
+const twilioClient = require("./twilioClient");
 
 const authClient = new auth.OAuth2User({
   client_id: process.env.OAUTH2_CLIENT_ID,
@@ -34,6 +35,11 @@ async function initializeClient() {
     return client;
   } catch (error) {
     console.error("Failed to initialize Twitter client: ", error);
+    await twilioClient.messages.create({
+      body: `Twitter client fucked up again: ${error} `,
+      from: process.env.TWILIO_NUMBER,
+      to: process.env.MY_PHONE_NUMBER,
+    });
     throw error;
   }
 }

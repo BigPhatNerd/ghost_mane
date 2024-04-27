@@ -3,7 +3,6 @@ const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
 dayjs.extend(utc);
 const router = express.Router();
-const Twilio = require("twilio");
 const {
   saveOAuthToken,
   isTokenExpired,
@@ -14,11 +13,7 @@ const { OAuthToken, Tweet, RepliedTweet } = require("../models");
 const { determineTweetTemplate } = require("../tweetArrays");
 const { checkTweetTiming, companyReport } = require("../middleware");
 const { getClient } = require("../utils/twitterClient");
-
-const twilioClient = new Twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+const twilioClient = require("../utils/twilioClient");
 const urlPrefix = process.env.PROD_URL || process.env.DEV_URL;
 const url = urlPrefix + "/api/twitterActions/oauth/callback";
 const authClient = new auth.OAuth2User({
