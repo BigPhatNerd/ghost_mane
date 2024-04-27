@@ -12,7 +12,7 @@ const { Client, auth } = require("twitter-api-sdk");
 const { OAuthToken, Tweet, RepliedTweet } = require("../models");
 const { determineTweetTemplate } = require("../tweetArrays");
 const { checkTweetTiming, companyReport } = require("../middleware");
-const { getClient } = require("../utils/twitterClient");
+const { initializeClient } = require("../utils/twitterClient");
 const twilioClient = require("../utils/twilioClient");
 const urlPrefix = process.env.PROD_URL || process.env.DEV_URL;
 const url = urlPrefix + "/api/twitterActions/oauth/callback";
@@ -25,6 +25,16 @@ const authClient = new auth.OAuth2User({
 const client = new Client(authClient);
 
 const STATE = process.env.STATE;
+
+router.route("/login").get(async (req, res) => {
+  const authUrl = authClient.generateAuthURL({
+    state: STATE,
+    code_challenge_method: "plain",
+    code_challenge: "test",
+  });
+  res.redirect(authUrl);
+});
+
 router.route("/oauth/callback").get(async (req, res) => {
   try {
     console.log("Callback route hit");
@@ -45,22 +55,13 @@ router.route("/oauth/callback").get(async (req, res) => {
   }
 });
 
-router.route("/login").get(async (req, res) => {
-  const authUrl = authClient.generateAuthURL({
-    state: STATE,
-    code_challenge_method: "plain",
-    code_challenge: "test",
-  });
-  res.redirect(authUrl);
-});
-
 router
   .route("/ghost_mane")
   .post(checkTweetTiming, companyReport, async (req, res) => {
     try {
       const user = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-      const client = await getClient();
+      const client = await initializeClient();
 
       if (!client) {
         return res.status(503).json({
@@ -115,7 +116,7 @@ router
   });
 
 router.route("/search_tweets").get(async (req, res) => {
-  const thisClient = await getClient();
+  const thisClient = await initializeClient();
 
   if (!thisClient) {
     return res.status(503).json({

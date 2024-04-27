@@ -44,11 +44,4 @@ async function initializeClient() {
   }
 }
 
-async function getClient() {
-  if (!client) {
-    await initializeClient();
-  }
-  return client;
-}
-
-module.exports = { getClient };
+module.exports = { initializeClient };
